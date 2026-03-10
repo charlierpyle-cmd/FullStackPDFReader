@@ -1,14 +1,17 @@
-# A Python program that reads a PDF file aloud using text-to-speech.
-# It allows the user to select a voice, set the starting page, adjust playback speed, and optionally save the audio as a WAV file.  
-# Below are the imports: pyttsx3, PyPDF2, and tkinter libraries.
-import pyttsx3 as pyt
-import PyPDF2 as PyPDF
-from tkinter.filedialog import * 
-#Function to choose and set the voice for text-to-speech
-def Voice(engine):
+"""
+A Python program that reads a PDF file aloud using text-to-speech.
+It allows the user to select a voice, set the starting page, adjust
+playback speed, and optionally save the audio as a WAV file.
+"""
+import pyttsx3
+import PyPDF2
+from tkinter.filedialog import askopenfilename
+
+def set_voice(engine):
+    """Prompt the user to choose and set the voice for text-to-speech."""
     voices = engine.getProperty('voices')
     print("Please choose a voice from the following options:")
-    for i, voice in enumerate(voices):    
+    for i, voice in enumerate(voices):
         print(f"{i}: {voice.name} ({voice.id})")
     try:
         choice = int(input("\nEnter the number of the voice you want to use: "))
@@ -19,48 +22,58 @@ def Voice(engine):
             print("Invalid choice. Default voice will be used.")
     except ValueError:
         print("Invalid input. Default voice will be used.")
-#Function to save audio as WAV file    
-def SaveWAV(engine, reader, startPage, endPage):  
-    saveWAV = input("Do you want to save the audio as a WAV file? (yes/no): ").strip().lower()
-    if saveWAV == 'yes':
-        fullSaveText = ""
-        outputFilename = input("Enter the output WAV file name (with .wav extension): ")
-        for num in range(startPage, endPage):
-            print(f"Processing page {num+1} of {endPage}...")
+
+def save_wav(engine, reader, start_page, end_page):
+    """Optionally save the PDF audio as a WAV file."""
+    save = input("Do you want to save the audio as a WAV file? (yes/no): ").strip().lower()
+    if save == 'yes':
+        output_filename = input("Enter the output WAV file name (with .wav extension): ")
+        full_save_text = ""
+        for num in range(start_page, end_page):
+            print(f"Processing page {num + 1} of {end_page}...")
             page = reader.pages[num]
             text = page.extract_text()
             if text:
-                fullSaveText += text + "\n "
-        engine.save_to_file(fullSaveText,outputFilename)
+                full_save_text += text + "\n"
+        engine.save_to_file(full_save_text, output_filename)
         engine.runAndWait()
-        print(f"Audio saved as {outputFilename}")  
-    elif saveWAV == 'no':
-        print("Procceding without saving a file")
+        print(f"Audio saved as {output_filename}")
+    elif save == 'no':
+        print("Proceeding without saving a file.")
     else:
-        print("Invalid Input. Procceding without saving a file")
-#Function
-def Speak(engine, reader, startPage, endPage):
-    fullText = ""
-    for num in range(startPage, endPage):
+        print("Invalid input. Proceeding without saving a file.")
+
+def speak(engine, reader, start_page, end_page):
+    """Extract text from the given page range and read it aloud."""
+    full_text = ""
+    for num in range(start_page, end_page):
         page = reader.pages[num]
         text = page.extract_text()
         if text:
-            fullText += text + "\n"
-    engine.say(fullText)
+            full_text += text + "\n"
+    engine.say(full_text)
     engine.runAndWait()
 
 def main():
-    engine = pyt.init()
-    Voice(engine)
+    """Main entry point for the PDF text-to-speech program."""
+    engine = pyttsx3.init()
+    set_voice(engine)
     book = askopenfilename()
-    reader = PyPDF.PdfReader(book)
-    numberOfPages = len(reader.pages)
-    print(f"Total pages: {numberOfPages}")
-    startPage = int(input("Enter the starting page number: ")) - 1
-    endPage = int(input("Enter the ending page number: "))
+    if not book:
+        print("No file selected. Exiting.")
+        return
+    reader = PyPDF2.PdfReader(book)
+    number_of_pages = len(reader.pages)
+    print(f"Total pages: {number_of_pages}")
+    start_page = int(input("Enter the starting page number: ")) - 1
+    end_page = int(input("Enter the ending page number: "))
+    if not (0 <= start_page < end_page <= number_of_pages):
+        print("Invalid page range. Exiting.")
+        return
     rate = int(input("Enter playback speed (default is 200): "))
     engine.setProperty('rate', rate)
-    SaveWAV(engine, reader, startPage, endPage)
-    Speak(engine, reader, startPage, endPage)
+    save_wav(engine, reader, start_page, end_page)
+    speak(engine, reader, start_page, end_page)
 
-main()
+if __name__ == "__main__":
+    main()
