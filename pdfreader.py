@@ -54,7 +54,7 @@ def speak(engine, reader, start_page, end_page):
     engine.say(full_text)
     engine.runAndWait()
 
-def main():
+def pdfreader():
     """Main entry point for the PDF text-to-speech program."""
     engine = pyttsx3.init()
     set_voice(engine)
@@ -75,5 +75,5 @@ def main():
     save_wav(engine, reader, start_page, end_page)
     speak(engine, reader, start_page, end_page)
 
-if __name__ == "__main__":
-    main()
+if __name__ == "__pdfreader__":
+    pdfreader()
