@@ -11,21 +11,26 @@ def get_connection():
 def init_db():
     conn = get_connection()
     cursor = conn.cursor()
-
     cursor.execute("""
        CREATE TABLE IF NOT EXISTS voices (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             voice_id Text NOT NULL UNIQUE,
-            voice_name Text NOT NULL)
-       """)
-
+            voice_name Text NOT NULL)""")
     cursor.execute("""
            CREATE TABLE IF NOT EXISTS page_ranges (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 filename Text NOT NULL UNIQUE,
                 total_pages INTEGER NOT NULL,
                 start_page INTEGER NOT NULL DEFAULT 1,
-                end_page INTEGER NOT NULL)
-           """)
+                end_page INTEGER NOT NULL)""")
+    conn.commit()
+    conn.close()
+
+def save_voices(voice_list):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM voices")
+    cursor.executemany("INSERT INTO voices (voice_id, voice_name )VALUES (?,?)",
+       [(v["id"], v["name"]) for v in voice_list])
     conn.commit()
     conn.close()
