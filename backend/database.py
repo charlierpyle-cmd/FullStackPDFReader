@@ -56,4 +56,12 @@ def save_page_range(filename, total_pages, start_page, end_page):
     conn.commit()
     conn.close()
 
+def get_page_range(filename):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM page_ranges WHERE filename = ?", (filename,))
+    row = cursor.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
 
