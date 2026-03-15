@@ -2,7 +2,7 @@ import pyttsx3
 import PyPDF2
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
-from database import init_db, save_voices
+from database import init_db, save_voices, get_voices
 
 app = FastAPI()
 
