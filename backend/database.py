@@ -34,3 +34,11 @@ def save_voices(voice_list):
        [(v["id"], v["name"]) for v in voice_list])
     conn.commit()
     conn.close()
+
+def get_voices():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT voice_id, voice_name FROM voices")
+    rows = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+    return rows
