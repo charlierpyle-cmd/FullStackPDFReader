@@ -42,3 +42,18 @@ def get_voices():
     rows = [dict(r) for r in cursor.fetchall()]
     conn.close()
     return rows
+
+def save_page_range(filename, total_pages, start_page, end_page):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        INSERT INTO page_ranges (filename, total_pages, start_page, end_page) 
+        VALUES (?,?,?,?)
+        ON CONFLICT (filename) DO UPDATE SET
+            total_pages = excluded.total_pages,
+            start_page = excluded.start_page,
+            end_page = excluded.end_page)""", (filename, total_pages, start_page, end_page))
+    conn.commit()
+    conn.close()
+
+
