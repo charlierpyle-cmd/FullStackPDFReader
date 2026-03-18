@@ -31,3 +31,10 @@ async def pdf_info(file: UploadFile = File(...)):
     save_page_range(file.filename, total, 1, total)
     return {"filename": file.filename, "total_pages": total}
 
+async def save_range(
+        filename: str = Form(...),
+        total_pages: int = Form(...),
+        start_page: int = Form(...),
+        end_page: int = Form(...)):
+    save_page_range(filename,total_pages,start_page, end_page)
+    return {"status": "saved"}
