@@ -1,7 +1,7 @@
 import pyttsx3
 import PyPDF2
 import io
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from database import init_db, save_voices, save_page_range
 
