@@ -7,15 +7,11 @@ from database import init_db, save_voices, save_page_range
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 init_db()
 
+@app.get("/voices")
 def list_voices():
     engine = pyttsx3.init()
     voices = engine.getProperty('voices')
@@ -24,6 +20,7 @@ def list_voices():
     save_voices(voice_list)
     return voice_list
 
+@app.post("/pdf-info")
 async def pdf_info(file: UploadFile = File(...)):
     contents = await file.read()
     reader = PyPDF2.PdfFileReader(io.BytesIO(contents))
@@ -31,6 +28,7 @@ async def pdf_info(file: UploadFile = File(...)):
     save_page_range(file.filename, total, 1, total)
     return {"filename": file.filename, "total_pages": total}
 
+@app.post("/save-range")
 async def save_range(
         filename: str = Form(...),
         total_pages: int = Form(...),
