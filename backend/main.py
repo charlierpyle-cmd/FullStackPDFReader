@@ -6,9 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from database import init_db, save_voices, save_page_range
 
 app = FastAPI()
-
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
-
 init_db()
 
 @app.get("/voices")
