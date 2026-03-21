@@ -55,7 +55,11 @@
      </div>
     <script>
         fetch('http://localhost:8000/voices')
-
+        .then(r => r.json())
+        .then(voices => {
+            const select = document.getElementById('selectVoice');
+            select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>).join('');
+          });
     </script>
 </body>
 </html>
