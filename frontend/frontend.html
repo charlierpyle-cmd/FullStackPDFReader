@@ -59,7 +59,14 @@
         .then(voices => {
             const select = document.getElementById('selectVoice');
             select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>).join('');
-          });
+        });
+
+        document.getElementById('PDFInput').addEventListener('change', async fucntion() {
+            const file = this.files[0];
+            const form = new FormData;
+            if (!file) return;
+            form.append('file', file);
+        });
     </script>
 </body>
 </html>
