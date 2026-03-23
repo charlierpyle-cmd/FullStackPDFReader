@@ -63,9 +63,14 @@
 
         document.getElementById('PDFInput').addEventListener('change', async fucntion() {
             const file = this.files[0];
-            const form = new FormData;
             if (!file) return;
+            const form = new FormData;
             form.append('file', file);
+            const data = await fetch('http://localhost:8000/pdf-info', {
+                method: 'POST', body: form}).then(r => r.json());
+            document.getElementById('end-page').value = data.total_pages;
+            document.getElementById('end-page').max = data.total_pages;
+            document.getElementById('start-page').max = data.total_pages;
         });
     </script>
 </body>
