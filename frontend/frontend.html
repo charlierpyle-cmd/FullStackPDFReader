@@ -1,77 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>PDF Reader</title>
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #2b2b25;
-            color: #f0f0f0;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        h1 { font-size: 1.5rem; margin-bottom: 1.5rem; }
-        label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin: 1rem 0 0.3rem;
-        }
-        input, select {
-            width: 100%;
-            padding: 0.5rem;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    </style>
-</head>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>PDF Reader</title>
+        <style>
+            body {
+                font-family: 'Roboto', sans-serif;
+                background-color: #2b2b25;
+                color: #f0f0f0;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            h1 {font-size: 1.5rem; margin-bottom: 1.5rem; }
+            label {
+                display: block;
+                font-size: 0.85rem;
+                font-weight: bold;
+                margin: 1rem 0 0.3rem;
+            }
+            input, select {
+                width: 100%;
+                padding: 0.5rem;
+                font-size: 1rem;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-sizing: border-box;
+            }
+            .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        </style>
+    </head>
+    <body>
+        <h1>PDF Reader</h1>
+        <hr>
+        <label>PDF Input</label>
+        <br>
+        <input type="file" id="PDFInput" accept=".pdf"/>
+        <hr>
+        <label for="selectVoice">Voice</label>
+        <select id="selectVoice"><option>A</option><option>B</option><option>C</option></select>
+        <hr>
+        <label>Page Range</label>
+         <div class="row">
+            <div>
+              <label for="start-page">From</label>
+              <input type="number" id="start-page" min="1" value="1" />
+            </div>
+            <div>
+              <label for="end-page">To</label>
+              <input type="number" id="end-page" min="1" value="1" />
+            </div>
+         </div>
+        <script>
+            fetch('http://localhost:8000/voices')
+            .then(r => r.json())
+            .then(voices => {
+                const select = document.getElementById('selectVoice');
+                select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>).join('');
+            });
 
-<body>
-    <h1>PDF Reader</h1>
-    <hr>
-    <label>PDF Input</label>
-    <br>
-    <input type="file" id="PDFInput" accept=".pdf"/>
-    <hr>
-    <label for="selectVoice">Voice</label>
-    <select id="selectVoice"><option>A</option><option>B</option><option>C</option></select>
-    <hr>
-    <label>Page Range</label>
-     <div class="row">
-        <div>
-          <label for="start-page">From</label>
-          <input type="number" id="start-page" min="1" value="1" />
-        </div>
-        <div>
-          <label for="end-page">To</label>
-          <input type="number" id="end-page" min="1" value="1" />
-        </div>
-     </div>
-    <script>
-        fetch('http://localhost:8000/voices')
-        .then(r => r.json())
-        .then(voices => {
-            const select = document.getElementById('selectVoice');
-            select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>).join('');
-        });
-
-        document.getElementById('PDFInput').addEventListener('change', async fucntion() {
-            const file = this.files[0];
-            if (!file) return;
-            const form = new FormData;
-            form.append('file', file);
-            const data = await fetch('http://localhost:8000/pdf-info', {
-                method: 'POST', body: form}).then(r => r.json());
-            document.getElementById('end-page').value = data.total_pages;
-            document.getElementById('end-page').max = data.total_pages;
-            document.getElementById('start-page').max = data.total_pages;
-        });
-    </script>
-</body>
+            document.getElementById('PDFInput').addEventListener('change', async fucntion() {
+                const file = this.files[0];
+                if (!file) return;
+                const form = new FormData;
+                form.append('file', file);
+                const data = await fetch('http://localhost:8000/pdf-info', {
+                    method: 'POST', body: form}).then(r => r.json());
+                document.getElementById('end-page').value = data.total_pages;
+                document.getElementById('end-page').max = data.total_pages;
+                document.getElementById('start-page').max = data.total_pages;
+            });
+        </script>
+    </body>
 </html>
