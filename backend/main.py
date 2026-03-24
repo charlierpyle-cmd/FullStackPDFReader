@@ -1,6 +1,8 @@
 import pyttsx3
 import PyPDF2
 import io
+
+import uvicorn
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from database import init_db, save_voices, save_page_range
@@ -34,3 +36,6 @@ async def save_range(
         end_page: int = Form(...)):
     save_page_range(filename,total_pages,start_page, end_page)
     return {"status": "saved"}
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
