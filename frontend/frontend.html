@@ -57,13 +57,12 @@
             .then(r => r.json())
             .then(voices => {
                 const select = document.getElementById('selectVoice');
-                select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>).join('');
+                select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>').join('');
             });
-
-            document.getElementById('PDFInput').addEventListener('change', async fucntion() {
+            document.getElementById('PDFInput').addEventListener('change', async function() {
                 const file = this.files[0];
                 if (!file) return;
-                const form = new FormData;
+                const form = new FormData();
                 form.append('file', file);
                 const data = await fetch('http://localhost:8000/pdf-info', {
                     method: 'POST', body: form}).then(r => r.json());
@@ -71,6 +70,22 @@
                 document.getElementById('end-page').max = data.total_pages;
                 document.getElementById('start-page').max = data.total_pages;
             });
+
+            document.getElementById('end-page').addEventListener('change', saveRange);
+            document.getElementById('start-page').addEventListener('change', saveRange);
+
+            function saveRange() {
+                const filename = document.getElementById('PDFInput').files[0]?.name;
+                if (!filename) {
+                    return;
+                }
+                const form = new FormData();
+                form.append('filename', filename);
+                form.append('total_pages', document.getElementById('end-page').max);
+                form.append('start_page', document.getElementById('start-page').value);
+                form.append('end_page', document.getElementById('end-page').value);
+                fetch('http://localhost:8000/save-range', {method: 'POST', body: form});
+            }
         </script>
     </body>
 </html>
