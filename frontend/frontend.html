@@ -57,7 +57,7 @@
             .then(r => r.json())
             .then(voices => {
                 const select = document.getElementById('selectVoice');
-                select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>').join('');
+                select.innerHTML = voices.map(v =>`<option value="${v.id}">${v.name}</option>`).join('');
             });
             document.getElementById('PDFInput').addEventListener('change', async function() {
                 const file = this.files[0];
