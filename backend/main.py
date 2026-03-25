@@ -23,7 +23,7 @@ def list_voices():
 @app.post("/pdf-info")
 async def pdf_info(file: UploadFile = File(...)):
     contents = await file.read()
-    reader = PyPDF2.PdfFileReader(io.BytesIO(contents))
+    reader = PyPDF2.PdfReader(io.BytesIO(contents))
     total = len(reader.pages)
     save_page_range(file.filename, total, 1, total)
     return {"filename": file.filename, "total_pages": total}
