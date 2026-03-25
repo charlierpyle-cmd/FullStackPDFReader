@@ -73,7 +73,6 @@
 
             document.getElementById('end-page').addEventListener('change', saveRange);
             document.getElementById('start-page').addEventListener('change', saveRange);
-
             function saveRange() {
                 const filename = document.getElementById('PDFInput').files[0]?.name;
                 if (!filename) {
