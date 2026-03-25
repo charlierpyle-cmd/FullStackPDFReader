@@ -52,7 +52,7 @@ def save_page_range(filename, total_pages, start_page, end_page):
         ON CONFLICT (filename) DO UPDATE SET
             total_pages = excluded.total_pages,
             start_page = excluded.start_page,
-            end_page = excluded.end_page)""", (filename, total_pages, start_page, end_page))
+            end_page = excluded.end_page""", (filename, total_pages, start_page, end_page))
     conn.commit()
     conn.close()
 
