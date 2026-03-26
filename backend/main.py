@@ -40,5 +40,12 @@ async def save_range(
     save_page_range(filename,total_pages,start_page, end_page)
     return {"status": "saved"}
 
+@app.post("/speak")
+async def speak(file: UploadFile = File(...), voice_id: str = Form(...), start_page: int = Form(...),
+        end_page: int = Form(...), speed: int = Form(200)):
+    contents = await file.read()
+    reader = PyPDF2.PdfReader(io.BytesIO(contents))
+
+
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
