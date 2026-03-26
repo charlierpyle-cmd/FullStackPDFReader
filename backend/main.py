@@ -1,7 +1,10 @@
 import pyttsx3
 import PyPDF2
 import io
-
+import os
+import uuid
+import tempfile
+import threading
 import uvicorn
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
